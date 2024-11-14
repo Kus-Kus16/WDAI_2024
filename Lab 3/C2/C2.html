@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Ćwiczenie 2</title>
+    <link rel="stylesheet" href="C2.css">
+    <script src="C2.js" defer></script>
+</head>
+
+<body>
+
+    <div class="form_container">
+        <h1>Generator hasła</h1>
+
+        <form id="form">
+            <input type="text" name="min" id="min" placeholder="Minimalna długość hasła" pattern="^[1-9]+$" class="form_input">
+            <input type="text" name="max" id="max" placeholder="Maksymalna długość hasła" pattern="^[1-9]+$" class="form_input">
+
+            <div class="form_input">
+                <label for="capital">Używać dużych liter?</label>
+                <input type="checkbox" name="capital" id="capital">
+            </div>
+
+            <div class="form_input">
+                <label for="special">Używać znaków specjalnych?</label>
+                <input type="checkbox" name="special" id="special">
+            </div>
+
+            <button type="submit" class="form_button">Wygeneruj hasło</button>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>

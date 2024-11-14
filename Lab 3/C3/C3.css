@@ -1,0 +1,41 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+header {
+    padding: 10px;
+    background-color: #8c8989;
+}
+
+.product_container {
+    display: flex;
+    justify-content: space-between;
+
+    margin: 10px;
+    padding: 10px;
+    border-radius: 3px;
+    background-color: #d3d3d3;
+}
+
+.text_container {
+    width: 80%;
+}
+
+.product_container h2 {
+    margin: 10px;
+}
+
+.product_container p {
+    margin: 10px;            
+}
+
+.product_container img {
+    height: 100px;
+}
+
+.input {
+    margin: 10px;
+    height: 30px;
+    width: 150px;
+}
