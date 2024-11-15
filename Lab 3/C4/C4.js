@@ -1,12 +1,15 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-// canvas.width = window.innerWidth;
-// canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-let interval = 0;
-let score = 0;
-let health = 3;
+let interval;
+let score;
+let health;
+let zombies = [];
+
+let leftPressed = false;
 
 const aimSize = 200;
 let aimX = (canvas.width - aimSize) / 2;
@@ -26,11 +29,10 @@ fullHealthImage.src = 'images/full_heart.png'
 const emptyHealthImage = new Image();
 emptyHealthImage.src = 'images/empty_heart.png'
 
-const textOffsetTop = 110;
-const textOffsetRight = 370;
+const textOffsetTop = 80;
+const textOffsetRight = 200;
 const fontSize = 100;
 
-const zombies = [];
 const maxZombieScale = 2;
 const maxZombieDx = 5;
 const maxZombieY = canvas.height / 4;
@@ -41,7 +43,8 @@ const frameWidth = 200;
 const frameHeight = 312;
 const totalFrames = 10;
 
-let leftPressed = false;
+const buttonHeight = 100;
+const buttonWidth = 400;
 
 function generateZombie() {
     let zombie = {x: 0, y: 0, dx: 0.5, scale: 0.2, frame: 0, t: 0};
@@ -51,8 +54,6 @@ function generateZombie() {
     zombie.dx += Math.random() * maxZombieDx;
     zombies.push(zombie);
 }
-
-generateZombie();
 
 function drawZombie(zombie) {
     const frameX = zombie.frame*frameWidth ;
@@ -67,7 +68,7 @@ function drawZombie(zombie) {
         zombie.frame = (zombie.frame + 1) % totalFrames;
     }
 
-    ctx.drawImage(zombieImage, frameX, frameY, frameWidth, frameHeight, zombie.x, zombie.y -ySize, xSize, ySize);
+    ctx.drawImage(zombieImage, frameX, frameY, frameWidth, frameHeight, zombie.x, zombie.y - ySize, xSize, ySize);
 
     zombie.x -= zombie.dx;
     zombie.t ++;
@@ -101,20 +102,64 @@ function drawHealth() {
 
 function drawScore() {
     ctx.font = `${fontSize}px Arial`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
     ctx.fillStyle = "#ffffff";
     const displayScore = score.toString().padStart(6, '0');
     ctx.fillText(`${displayScore}`, canvas.width - textOffsetRight, textOffsetTop);
 }
 
+function drawMenu() {
+    ctx.beginPath();
+    ctx.rect(0, canvas.height / 3, canvas.width, canvas.height / 3);
+    ctx.fillStyle = "#af260b80";
+    ctx.fill();
+    ctx.closePath();
+
+    ctx.beginPath();
+    ctx.rect(canvas.width / 2 - buttonWidth / 2, canvas.height / 2 - buttonHeight / 2, buttonWidth, buttonHeight);
+    ctx.fillStyle = "#ffffff";
+    ctx.fill();
+    ctx.closePath();
+
+    ctx.font = "50px Arial";
+    ctx.fillStyle = "#af260b";
+    ctx.fillText("Retry", canvas.width / 2, canvas.height / 2);
+}
+
+
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground();
     drawZombies();
-    drawAim();
     drawHealth();
     drawScore();
+    if (health <= 0) drawMenu();
+    drawAim();
+
+    zombiesCollisionDetection()
 
     requestAnimationFrame(draw);
+}
+
+function zombiesCollisionDetection() {
+    for (let index = 0 ; index < zombies.length ; index++){      
+        const zombie = zombies[index];
+        const xRight = zombie.x + frameWidth*zombie.scale;
+
+        if (xRight < 0) {            
+            health --;
+            zombies.splice(index, 1);
+
+            if (health === 0) {
+                gameEnd();
+            }
+
+            return;
+
+        }
+
+    }
 }
 
 function mouseMoveHandler(e) {
@@ -129,5 +174,64 @@ function mouseMoveHandler(e) {
     }
 }   
 
-draw()
-document.addEventListener("mousemove", mouseMoveHandler);
+function mouseClickHandler(e) {
+    const clickX = e.clientX - canvas.offsetLeft;
+    const clickY = e.clientY - canvas.offsetTop;
+
+    for (let index = zombies.length - 1 ; index >= 0 ; index--) {    
+        const zombie = zombies[index];
+        const xSize = frameWidth*zombie.scale;
+        const ySize = frameHeight*zombie.scale;
+
+        if (clickX > zombie.x  && clickX < zombie.x + xSize &&
+             clickY < zombie.y && clickY > zombie.y - ySize ) {
+
+            zombies.splice(index, 1);
+            score += 20;
+            return;
+        }
+
+    };
+
+    score -= 5;
+
+}
+
+function retryHandler(e) {
+    const clickX = e.clientX - canvas.offsetLeft;
+    const clickY = e.clientY - canvas.offsetTop;
+
+
+    if (clickX > canvas.width / 2 - buttonWidth / 2 &&
+        clickX < canvas.width / 2 - buttonWidth / 2 + buttonWidth &&
+        clickY > canvas.height / 2 - buttonHeight / 2 &&
+        clickY < canvas.height / 2 - buttonHeight / 2 + buttonHeight) {
+        gameStart();
+    }
+
+}
+
+function gameStart() {
+    console.log("newgame");
+    
+    interval = setInterval(generateZombie, 1000);
+    score = 0;
+    health = 3;
+
+    canvas.removeEventListener('click', retryHandler);
+    canvas.addEventListener('click', mouseClickHandler);
+    
+    draw()
+}
+
+function gameEnd(){
+    clearInterval(interval);
+    zombies = [];
+    
+    canvas.removeEventListener('click', mouseClickHandler);
+    canvas.addEventListener('click', retryHandler);
+
+}
+
+canvas.addEventListener("mousemove", mouseMoveHandler);
+gameStart()
