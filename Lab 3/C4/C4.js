@@ -20,6 +20,7 @@ aimImage.src = 'images/aim.png'
 const backgroundImage = new Image();
 backgroundImage.src = 'images/board-bg.jpg'
 
+const maxHeath = 3;
 const healthSize = 80;
 const healthPadding = 10;
 const healthOffset = 30;
@@ -29,9 +30,9 @@ fullHealthImage.src = 'images/full_heart.png'
 const emptyHealthImage = new Image();
 emptyHealthImage.src = 'images/empty_heart.png'
 
-const textOffsetTop = 80;
-const textOffsetRight = 200;
 const fontSize = 100;
+const textOffsetTop = 80;
+let textOffsetRight = 200;
 
 const maxZombieScale = 2;
 const maxZombieDx = 5;
@@ -45,6 +46,14 @@ const totalFrames = 10;
 
 const buttonHeight = 100;
 const buttonWidth = 400;
+
+const sadMusic = new Audio('images/sad-music.mp3');
+sadMusic.loop = true;
+sadMusic.volume = 0.5;
+
+const mainMusic = new Audio('images/CrazyDave.mp3');
+mainMusic.loop = true;
+mainMusic.volume = 0.5;
 
 function generateZombie() {
     let zombie = {x: 0, y: 0, dx: 0.5, scale: 0.2, frame: 0, t: 0};
@@ -88,7 +97,7 @@ function drawBackground() {
 
 function drawHealth() {
     const healthY = healthOffset;
-    for (let i = 0 ; i < 3 ; i++){
+    for (let i = 0 ; i < maxHeath ; i++){
         const healthX = i*(healthSize + healthPadding) + healthOffset;
         
         if (health - i > 0) {
@@ -105,7 +114,17 @@ function drawScore() {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.fillStyle = "#ffffff";
-    const displayScore = score.toString().padStart(6, '0');
+
+    let displayScore = Math.abs(score).toString().padStart(6, '0');
+
+    if (score < 0) {
+        displayScore = "-" + displayScore;
+        textOffsetRight = 217;
+    }
+    else {
+        textOffsetRight = 200;
+    }
+
     ctx.fillText(`${displayScore}`, canvas.width - textOffsetRight, textOffsetTop);
 }
 
@@ -116,9 +135,20 @@ function drawMenu() {
     ctx.fill();
     ctx.closePath();
 
+    // ctx.beginPath();
+    // ctx.rect(canvas.width / 2 - buttonWidth / 2, canvas.height / 2 - buttonHeight / 2, buttonWidth, buttonHeight);
+    // ctx.fillStyle = "#ffffff";
+    // ctx.fill();
+    // ctx.closePath();
+
     ctx.beginPath();
-    ctx.rect(canvas.width / 2 - buttonWidth / 2, canvas.height / 2 - buttonHeight / 2, buttonWidth, buttonHeight);
-    ctx.fillStyle = "#ffffff";
+    const radius = 20; 
+    ctx.moveTo(canvas.width / 2 - buttonWidth / 2 + radius, canvas.height / 2 - buttonHeight / 2);
+    ctx.arcTo(canvas.width / 2 + buttonWidth / 2, canvas.height / 2 - buttonHeight / 2, canvas.width / 2 + buttonWidth / 2, canvas.height / 2 + buttonHeight / 2, radius);
+    ctx.arcTo(canvas.width / 2 + buttonWidth / 2, canvas.height / 2 + buttonHeight / 2, canvas.width / 2 - buttonWidth / 2, canvas.height / 2 + buttonHeight / 2, radius);
+    ctx.arcTo(canvas.width / 2 - buttonWidth / 2, canvas.height / 2 + buttonHeight / 2, canvas.width / 2 - buttonWidth / 2, canvas.height / 2 - buttonHeight / 2, radius);
+    ctx.arcTo(canvas.width / 2 - buttonWidth / 2, canvas.height / 2 - buttonHeight / 2, canvas.width / 2 + buttonWidth / 2, canvas.height / 2 - buttonHeight / 2, radius);
+    ctx.fillStyle = "#ffffff"; 
     ctx.fill();
     ctx.closePath();
 
@@ -213,10 +243,14 @@ function retryHandler(e) {
 
 function gameStart() {
     console.log("newgame");
+
+    sadMusic.pause();
+    sadMusic.currentTime = 0;
+    mainMusic.play();
     
     interval = setInterval(generateZombie, 1000);
     score = 0;
-    health = 3;
+    health = maxHeath;
 
     canvas.removeEventListener('click', retryHandler);
     canvas.addEventListener('click', mouseClickHandler);
@@ -225,6 +259,10 @@ function gameStart() {
 }
 
 function gameEnd(){
+    mainMusic.pause();
+    mainMusic.currentTime = 0;
+    sadMusic.play();
+
     clearInterval(interval);
     zombies = [];
     
