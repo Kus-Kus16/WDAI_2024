@@ -4,10 +4,11 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-let interval;
+let spawner;
 let score;
 let health;
-let zombies = [];
+let spawnRate;
+let zombies = new Set();
 
 let leftPressed = false;
 
@@ -53,7 +54,7 @@ sadMusic.volume = 0.5;
 
 const mainMusic = new Audio('images/CrazyDave.mp3');
 mainMusic.loop = true;
-mainMusic.volume = 0.5;
+mainMusic.volume = 0.3;
 
 function generateZombie() {
     let zombie = {x: 0, y: 0, dx: 0.5, scale: 0.2, frame: 0, t: 0};
@@ -61,7 +62,12 @@ function generateZombie() {
     zombie.y = canvas.height - (Math.random() * maxZombieY);
     zombie.scale += Math.random() * maxZombieScale;
     zombie.dx += Math.random() * maxZombieDx;
-    zombies.push(zombie);
+    zombies.add(zombie);
+
+    spawnRate = Math.max(spawnRate - 1, 1);
+    clearInterval(spawner);
+    spawner = setInterval(generateZombie, spawnRate);
+    console.log(spawnRate);
 }
 
 function drawZombie(zombie) {
@@ -173,20 +179,18 @@ function draw() {
 }
 
 function zombiesCollisionDetection() {
-    for (let index = 0 ; index < zombies.length ; index++){      
-        const zombie = zombies[index];
+    for (let zombie of zombies){      
         const xRight = zombie.x + frameWidth*zombie.scale;
 
         if (xRight < 0) {            
             health --;
-            zombies.splice(index, 1);
+            zombies.delete(zombie);
 
             if (health === 0) {
                 gameEnd();
             }
 
             return;
-
         }
 
     }
@@ -208,22 +212,28 @@ function mouseClickHandler(e) {
     const clickX = e.clientX - canvas.offsetLeft;
     const clickY = e.clientY - canvas.offsetTop;
 
-    for (let index = zombies.length - 1 ; index >= 0 ; index--) {    
-        const zombie = zombies[index];
+    let lastZombie = null;
+
+    for (let zombie of zombies) {    
         const xSize = frameWidth*zombie.scale;
         const ySize = frameHeight*zombie.scale;
 
         if (clickX > zombie.x  && clickX < zombie.x + xSize &&
              clickY < zombie.y && clickY > zombie.y - ySize ) {
 
-            zombies.splice(index, 1);
-            score += 20;
-            return;
+            lastZombie = zombie;
         }
 
     };
 
-    score -= 5;
+    if (lastZombie != null){
+        zombies.delete(lastZombie);
+        score += 20;
+    }
+    else {
+        score -= 5;
+    }
+
 
 }
 
@@ -248,7 +258,8 @@ function gameStart() {
     sadMusic.currentTime = 0;
     mainMusic.play();
     
-    interval = setInterval(generateZombie, 1000);
+    spawner = setInterval(generateZombie, 1000);
+    spawnRate = 1000;
     score = 0;
     health = maxHeath;
 
@@ -263,8 +274,8 @@ function gameEnd(){
     mainMusic.currentTime = 0;
     sadMusic.play();
 
-    clearInterval(interval);
-    zombies = [];
+    clearInterval(spawner);
+    zombies.clear();
     
     canvas.removeEventListener('click', mouseClickHandler);
     canvas.addEventListener('click', retryHandler);
