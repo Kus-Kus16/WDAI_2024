@@ -1,28 +1,30 @@
 const main = document.getElementById("main");
-const input = document.getElementById("input")
-const select = document.getElementById("select")
+const searchInput = document.getElementById("input");
+const sortSelect = document.getElementById("select");
 
 let products;
-fetchProducts()
+let currentList;
+fetchProducts();
 
-input.addEventListener('input', event => filterList(products, input.value));
-select.addEventListener('change', event => filterList(products, input.value));
+searchInput.addEventListener('input', () => filterList(searchInput.value));
+sortSelect.addEventListener('change', () => sortList(sortSelect.value));
 
 async function fetchProducts() {
     try {
         const response = await fetch("https://dummyjson.com/products");
-        const data = await response.json()
-        displayList(data.products);
-        products = data.products
+        const data = await response.json();
+        products = data.products;
+        currentList = products;
+        displayList(currentList);
 
     } catch (err) {
-        console.log(err)
+        console.log(err);
     }
 }
 
 function displayList(list) {
-    main.innerHTML=""
-    list.forEach(element => create(element));
+    main.innerHTML="";
+    list.forEach(product => create(product));
 }
 
 function create(product) {
@@ -32,7 +34,7 @@ function create(product) {
     let textContainer = document.createElement('div');
     textContainer.classList.add('text_container');
 
-    let title = document.createElement('h2')
+    let title = document.createElement('h2');
     title.textContent = product.title;
 
     let description = document.createElement('p');
@@ -50,36 +52,34 @@ function create(product) {
     main.appendChild(productContainer);
 }
 
-function filterList(list, query) {
+function filterList(query) {
     console.log("filter");
 
-    const newList = list.filter( product =>  
-        product.title.toLowerCase().includes(query.toLowerCase())
+    currentList = products.filter( product =>  
+        product.title.toLowerCase().includes(query.toLowerCase()) 
+        //|| product.description.toLowerCase().includes(query.toLowerCase())
     );
 
-    sortList(newList, select.value);
+    sortList(currentList, sortSelect.value);
 }
 
-function sortList(list, type) {
+function sortList(type) {
     console.log("sort");
     
-    let newList = [...list]
+    let sortedList = [...currentList]
 
     switch(type) {
-        case "null":
-            newList = list;
-            break;
         case "asc":
-            newList.sort((a, b) => {
+            sortedList.sort((a, b) => {
             return a.title.localeCompare(b.title);
             });
             break;
         case "desc":
-            newList.sort((a, b) => {
-            return -a.title.localeCompare(b.title);
+            sortedList.sort((a, b) => {
+            return - a.title.localeCompare(b.title);
             });
             break;
     }
 
-    displayList(newList);
+    displayList(sortedList);
 }

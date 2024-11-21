@@ -15,8 +15,8 @@
         <h1>Generator hasła</h1>
 
         <form id="form">
-            <input type="text" name="min" id="min" placeholder="Minimalna długość hasła" pattern="^[1-9]+$" class="form_input">
-            <input type="text" name="max" id="max" placeholder="Maksymalna długość hasła" pattern="^[1-9]+$" class="form_input">
+            <input type="text" name="min" id="min" placeholder="Minimalna długość hasła" pattern="^[1-9][0-9]*$" class="form_input" required>
+            <input type="text" name="max" id="max" placeholder="Maksymalna długość hasła" pattern="^[1-9][0-9]*$" class="form_input" required>
 
             <div class="form_input">
                 <label for="capital">Używać dużych liter?</label>

@@ -22,6 +22,7 @@ document.getElementById("form").addEventListener("submit", function(event) {
     }
 
     let characters = letters.concat(numbers);
+
     if (capital) {
         characters = characters.concat(capitals);
     }

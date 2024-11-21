@@ -4,7 +4,6 @@ const hour = minute * 60;
 const day = hour * 24;
 const year = day * 365;
 
-
 let startTime;
 let pauseTime = 0;
 let interval = null;
@@ -18,9 +17,9 @@ function start() {
 
 function stop() {
     if (interval) {
-    clearInterval(interval);
-    pauseTime += new Date().getTime() - startTime;;
-    interval = null;
+        clearInterval(interval);
+        pauseTime += new Date().getTime() - startTime;;
+        interval = null;
     }
 }
 

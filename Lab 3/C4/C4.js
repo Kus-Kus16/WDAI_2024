@@ -16,20 +16,20 @@ const aimSize = 200;
 let aimX = (canvas.width - aimSize) / 2;
 let aimY = (canvas.height - aimSize) / 2;
 const aimImage = new Image();
-aimImage.src = 'images/aim.png'
+aimImage.src = 'images/aim.png';
 
 const backgroundImage = new Image();
-backgroundImage.src = 'images/board-bg.jpg'
+backgroundImage.src = 'images/board-bg.jpg';
 
-const maxHeath = 3;
+const maxHealth = 3;
 const healthSize = 80;
 const healthPadding = 10;
 const healthOffset = 30;
 
 const fullHealthImage = new Image();
-fullHealthImage.src = 'images/full_heart.png'
+fullHealthImage.src = 'images/full_heart.png';
 const emptyHealthImage = new Image();
-emptyHealthImage.src = 'images/empty_heart.png'
+emptyHealthImage.src = 'images/empty_heart.png';
 
 const fontSize = 100;
 const textOffsetTop = 80;
@@ -40,7 +40,7 @@ const maxZombieDx = 5;
 const maxZombieY = canvas.height / 4;
 
 const zombieImage = new Image();
-zombieImage.src = 'images/walkingdead.png'
+zombieImage.src = 'images/walkingdead.png';
 const frameWidth = 200;
 const frameHeight = 312;
 const totalFrames = 10;
@@ -65,9 +65,10 @@ function generateZombie() {
     zombies.add(zombie);
 
     spawnRate = Math.max(spawnRate - 1, 1);
+    console.log(spawnRate);
+
     clearInterval(spawner);
     spawner = setInterval(generateZombie, spawnRate);
-    console.log(spawnRate);
 }
 
 function drawZombie(zombie) {
@@ -98,12 +99,13 @@ function drawAim() {
 }
 
 function drawBackground() {
-    ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height)
+    ctx.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
 }
 
 function drawHealth() {
     const healthY = healthOffset;
-    for (let i = 0 ; i < maxHeath ; i++){
+
+    for (let i = 0 ; i < maxHealth ; i++){
         const healthX = i*(healthSize + healthPadding) + healthOffset;
         
         if (health - i > 0) {
@@ -173,7 +175,7 @@ function draw() {
     if (health <= 0) drawMenu();
     drawAim();
 
-    zombiesCollisionDetection()
+    zombiesCollisionDetection();
 
     requestAnimationFrame(draw);
 }
@@ -234,13 +236,11 @@ function mouseClickHandler(e) {
         score -= 5;
     }
 
-
 }
 
 function retryHandler(e) {
     const clickX = e.clientX - canvas.offsetLeft;
     const clickY = e.clientY - canvas.offsetTop;
-
 
     if (clickX > canvas.width / 2 - buttonWidth / 2 &&
         clickX < canvas.width / 2 - buttonWidth / 2 + buttonWidth &&
@@ -261,12 +261,12 @@ function gameStart() {
     spawner = setInterval(generateZombie, 1000);
     spawnRate = 1000;
     score = 0;
-    health = maxHeath;
+    health = maxHealth;
 
     canvas.removeEventListener('click', retryHandler);
     canvas.addEventListener('click', mouseClickHandler);
     
-    draw()
+    draw();
 }
 
 function gameEnd(){
@@ -283,4 +283,4 @@ function gameEnd(){
 }
 
 canvas.addEventListener("mousemove", mouseMoveHandler);
-gameStart()
+gameStart();
