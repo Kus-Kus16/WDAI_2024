@@ -4,6 +4,36 @@ const Order = require('./Order');
 
 const router = express.Router();
 
+const authenticateJWT = async (req, res, next) => {
+    const token = req.headers['authorization']?.split(' ')[1]; 
+
+    if (!token) {
+        return res.status(403).json({ error: 'No token' });
+    }
+
+    try {
+        const response = await axios.post(
+            'http://localhost:3003/api/verify', 
+            {},  
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,  
+                }
+            }
+        );
+
+        if (response.data.userId) {
+            req.userId = response.data.userId; 
+            next();  
+        } else {
+            return res.status(401).json({ error: 'Invalid token' });
+        }
+    } catch (error) {
+        return res.status(500).json({ error: 'Token verification error' });
+    }
+};
+
+
 async function isBookAvailable(bookId) {
     try {
         const response = await axios.get(`http://localhost:3001/api/books/${bookId}`); 
@@ -24,7 +54,7 @@ router.get('/:userId', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {  
+router.post('/', authenticateJWT, async (req, res) => {  
     const { userId, bookId, quantity } = req.body;
 
     if (!userId || !bookId || !quantity || quantity < 1) {
@@ -44,7 +74,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.delete('/:orderId', async (req, res) => {
+router.delete('/:orderId', authenticateJWT, async (req, res) => {
     const { orderId } = req.params;
 
     try {
@@ -60,7 +90,7 @@ router.delete('/:orderId', async (req, res) => {
     }
 });
 
-router.patch('/:orderId', async (req, res) => {
+router.patch('/:orderId', authenticateJWT, async (req, res) => {
     const { orderId } = req.params;
     const { quantity } = req.body;
 

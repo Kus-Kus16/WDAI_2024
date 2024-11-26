@@ -1,7 +1,38 @@
 const express = require('express');
+const axios = require('axios');
 const Book = require('./Book');
 
 const router = express.Router();
+
+const authenticateJWT = async (req, res, next) => {
+    const token = req.headers['authorization']?.split(' ')[1]; 
+
+    if (!token) {
+        return res.status(403).json({ error: 'No token' });
+    }
+
+    try {
+        const response = await axios.post(
+            'http://localhost:3003/api/verify', 
+            {},  
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,  
+                }
+            }
+        );
+
+        if (response.data.userId) {
+            req.userId = response.data.userId; 
+            next();  
+        } else {
+            return res.status(401).json({ error: 'Invalid token' });
+        }
+    } catch (error) {
+        return res.status(500).json({ error: 'Token verification error' });
+    }
+};
+
 
 router.get('/', async (req, res) => {
     try {
@@ -28,7 +59,7 @@ router.get('/:bookId', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', authenticateJWT, async (req, res) => {
     const { title, author, year } = req.body;
 
     if (!title) {
@@ -43,7 +74,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-router.delete('/:bookId', async (req, res) => {
+router.delete('/:bookId', authenticateJWT, async (req, res) => {
     const { bookId } = req.params;
 
     try {
