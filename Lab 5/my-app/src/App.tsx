@@ -1,6 +1,11 @@
 import './App.css'
-import Aktualizacja from './components/inne/Aktualizacja'
-import Ternary from './components/inne/Ternary'
+import Licznik from './components/efekty/Licznik'
+import Odliczanie from './components/efekty/Odliczanie'
+import Tytuł from './components/efekty/Tytuł'
+// import Studenci from './components/studenci/Studenci'
+// import StudentManager from './components/studenci/StudentManager'
+// import Aktualizacja from './components/inne/Aktualizacja'
+// import Ternary from './components/inne/Ternary'
 // import Formularz from './components/formularze/Formularz'
 // import Haslo from './components/formularze/Haslo'
 // import Logowanie from './components/formularze/Logowanie'
@@ -22,8 +27,15 @@ function App() {
     <Haslo/>
     <Logowanie/> */}
 
-    <Ternary/>
-    <Aktualizacja/>
+    {/* <Ternary/>
+    <Aktualizacja/> */}
+
+    {/* <Studenci/>
+    <StudentManager/> */}
+
+    <Licznik/>
+    <Tytuł/>
+    <Odliczanie/>
     </div>
   )
 }
