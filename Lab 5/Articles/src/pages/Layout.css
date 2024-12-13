@@ -1,0 +1,148 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    height: 64px;
+    width: 100%;
+    padding: 10px;
+    top: 0;
+    position: absolute;
+    background-color: #333;
+}
+
+.menu ul {
+    list-style: none;
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+
+.menu li {
+    display: flex;
+    align-items: center;
+}
+
+.menu a {
+    margin: 10px 20px;
+    text-decoration: none;
+    color: white;
+}
+
+.menu a:hover {
+    color: #646cff;
+    transition: all 0.15s ease;
+} 
+
+h1 {
+    width: 50%;
+}
+
+main {
+    margin-top: 94px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+    justify-items: center;
+
+    gap: 20px;
+}
+
+button {
+    margin: 10px;
+}
+
+.article {
+    width: 95%;
+    margin: 40px;
+    padding: 30px;
+    border: 2px solid #ddd;
+    border-radius: 5px;
+
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.article h1 {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+.blog ul {
+    width: 50%;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.blog li {
+    margin: 15px;
+    padding: 5px 10px;
+    border: solid 1px #333;
+    border-radius: 10px;
+    font-size: 30px;
+    text-align: center;
+}
+
+.blog a {
+    text-decoration: none;
+    color: #333;
+}
+
+.blog a:hover {
+    color: #646cff;
+    transition: all 0.15s ease;
+} 
+
+.form input {
+    width: 50%;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: border-color 0.25s;   
+}
+
+.form input:hover {
+    border-color: #646cff
+}
+
+.form input:focus,
+input:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.form textarea {
+    width: 50%;
+    height: 350px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    padding: 0.6em 1.2em;
+    font-size: 1em;
+    font-weight: 500;
+    font-family: inherit;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: border-color 0.25s; 
+    resize: none;  
+}
+
+.form textarea:hover {
+    border-color: #646cff
+}
+
+.form textarea:focus,
+textarea:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
