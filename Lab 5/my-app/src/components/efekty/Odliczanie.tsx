@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 function Odliczanie() {
-    const [licznik, setLicznik] = useState(5.0)
+    const [licznik, setLicznik] = useState(15.0)
     const [active, setActive] = useState(false)
     const [ended, setEnded] = useState(false)
 

@@ -11,7 +11,7 @@ function Haslo() {
         <input type="text" id="Input2" value={haslo2} onChange={(event) => setHaslo2(event.target.value)}/>
         <label htmlFor="Input2"> Powtórz Hasło</label>
 
-        {haslo1 == "" || haslo2 == "" ?
+        {haslo1 == "" && haslo2 == "" ?
         <div>Proszę wprowadzić hasło</div> :
             haslo1 != haslo2 ?
             <div>Hasła nie są zgodne</div> :

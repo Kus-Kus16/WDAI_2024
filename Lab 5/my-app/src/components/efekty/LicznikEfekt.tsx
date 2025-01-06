@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function Licznik() {
+function LicznikEfekt() {
     const [counter, setCounter] = useState(0)
 
     useEffect( () => {
@@ -23,4 +23,4 @@ function Licznik() {
     );
 }
 
-export default Licznik;
+export default LicznikEfekt;
